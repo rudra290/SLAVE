@@ -7,7 +7,7 @@ This repository contains a Verilog implementation of an SPI (Serial Peripheral I
 ## 🛠️ Features
 
 - SPI Slave protocol handling with:
-  - 15-bit address phase 16th bit for r/w operation [0 for write, 1 for read]
+  - 15-bit address phase, 16th bit for r/w operation [0 for write, 1 for read]
   - 8-bit data phase
 - Supports **read** and **write** operations
 - Tri-state bidirectional `SDIO` line

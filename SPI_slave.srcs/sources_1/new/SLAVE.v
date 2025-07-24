@@ -24,66 +24,119 @@ module SLAVE(
     input sclk,
     inout SDIO,
     input SEN
-);
-
-    // Internal registers               
-    reg [4:0] count = 0;
-    reg [15:0] Addr;
-    reg [7:0] Data_in;           // Data received from master
-    reg [7:0] Data_out;          // Data to be sent to master
-    
-    // Internal memory for the slave
-    reg [7:0] memory [0:65535];
-    
-    // This is the output driver for the SDIO pin
-    // It's active only during a read operation when SEN is low.
-    assign SDIO = (!SEN && Addr[15] && count > 16) ? Data_out[7] : 1'bz;
-
-    // Main logic block
+    );
+    reg R_W,sdio_in;
+    reg [4:0]count = 0;
+    reg [15:0]Addr;
+    reg [7:0]Data;
     always @(posedge sclk) begin
-        if (SEN) begin
-            // When Slave Enable is high, reset everything
-            count <= 0;
-            Addr  <= 0;
-        end 
-        else begin
-            // When Slave Enable is low, the transaction is active
-            count <= count + 1; // Increment count on each clock edge
-            
-            // State 0: Capture the Read/Write command bit
-            if (count == 0) begin
-                Addr[15] <= SDIO;
-            end
-            
-            // States 1-16: Capture the 16-bit address
-            // This is done serially, bit by bit
-            if (count >= 1 && count <= 16) begin
-                Addr[15 - count] <= SDIO;
-            end
-
-            // States 17-24: Data phase
-            if (count >= 17 && count <= 23) begin
-                if (Addr[15] == 0) begin // It's a WRITE operation
-                    // Capture the data bits coming from the master
-                    Data_in[24 - count] <= SDIO;
-                end
-                else begin // It's a READ operation
-                    // Shift out the data from Data_out register
-                    Data_out <= {Data_out[6:0], 1'b0}; 
-                end
-            end
-
-            // End of transaction processing
-            if (count == 16 && Addr[15] == 1) begin
-                // If it's a READ, load the data from memory after address is received
-                Data_out <= memory[Addr];
-            end
-
-            if (count == 23 && Addr[15] == 0) begin
-                // If it's a WRITE, store the received data into memory
-                memory[Addr] <= Data_in;
-            end
-        end
+    if(SEN) begin
+    count = 0;
     end
-
+    else begin
+    case(count)
+    5'b00000: begin
+        R_W = SDIO;
+        Addr[15] = 0;
+        count = 5'b00001;
+        end
+    5'b00001: begin
+        Addr[14] = 0;
+        count = 5'b00010;
+        end
+    5'b00010: begin
+        Addr[13] = 0;
+        count = 5'b00011;
+        end
+    5'b00011: begin
+        Addr[12] = SDIO;
+        count = 5'b00100;
+        end
+    5'b00100: begin
+        Addr[11] = SDIO;
+        count = 5'b00101;
+        end
+    5'b00101: begin
+        Addr[10] = SDIO;
+        count = 5'b00110;
+        end
+    5'b00110: begin
+        Addr[9] = SDIO;
+        count = 5'b00111;
+        end
+    5'b00111: begin
+        Addr[8] = SDIO;
+        count = 5'b01000;
+        end
+    5'b01000: begin
+        Addr[7] = SDIO;
+        count = 5'b01001;
+        end
+    5'b01001: begin
+        Addr[6] = SDIO;
+        count = 5'b01010;
+        end
+    5'b01010: begin
+        Addr[5] = SDIO;
+        count = 5'b01011;
+        end
+    5'b01011: begin
+        Addr[4] = SDIO;
+        count = 5'b01100;
+        end
+    5'b01100: begin
+        Addr[3] = SDIO;
+        count = 5'b01101;
+        end
+    5'b01101: begin
+        Addr[2] = SDIO;
+        count = 5'b01110;
+        end
+    5'b01110: begin
+        Addr[1] = SDIO;
+        count = 5'b01111;
+        end
+    5'b01111: begin
+        Addr[0] = SDIO;
+        count = 5'b10000;
+        end
+    5'b10000: begin
+        Data[7] = SDIO;
+        count = 5'b10001;
+        end
+    5'b10001: begin
+        Data[6] = SDIO;
+        count = 5'b10010;
+        end
+    5'b10010: begin
+        Data[5] = SDIO;
+        count = 5'b10011;
+        end
+    5'b10011: begin
+        Data[4] = SDIO;
+        count = 5'b10100;
+        end
+    5'b10100: begin
+        Data[3] = SDIO;
+        count = 5'b10101;
+        end
+    5'b10101: begin
+        Data[2] = SDIO;
+        count = 5'b10110;
+        end
+    5'b10110: begin
+        Data[1] = SDIO;
+        count = 5'b10111;
+        end
+    5'b10111: begin
+        Data[0] = SDIO;
+        count = 5'b11000;
+        end
+    default: begin
+        count = 5'b11000;  
+        end
+    endcase
+    end
+    end
+    
 endmodule

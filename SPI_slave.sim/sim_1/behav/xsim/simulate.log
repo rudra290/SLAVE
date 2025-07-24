@@ -14,4 +14,4 @@ FINAL VERIFICATION:
   Data written (0xcc) matches data read (0xcc).
 --------------------------------------------------
 INFO: Simulation finished at time 620000 ns.
-$finish called at time : 620 ns : File "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v" Line 162
+$finish called at time : 620 ns : File "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v" Line 168

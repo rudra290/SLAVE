@@ -60,8 +60,9 @@ module SLAVE_tb();
             $display("Writing Data 0x%h to Address 0x%h", data_w, addr_cmd[14:0]);
 
             is_master_writing = 1'b1; // Master will be driving the bus
+            
             SEN = 0; // Assert Slave Enable
-
+            
             // 1. Send 16-bit Address Command (MSB is R/W bit)
             for (integer i = 15; i >= 0; i = i - 1) begin
                 @(negedge sclk);
@@ -104,7 +105,7 @@ module SLAVE_tb();
             // FIX: Wait for one full clock cycle to prevent a race condition.
             // This ensures the master holds the last address bit on the bus
             // long enough for the slave to sample it before the master releases the bus.
-            #6;
+            # (CLK_PERIOD );
 
             // 2. Switch to read mode and capture 8 bits of data
             is_master_writing = 1'b0; // Master now safely releases the bus for the slave to drive
@@ -133,16 +134,21 @@ module SLAVE_tb();
 
         // 2. Perform a WRITE operation
         // Construct the 16-bit address command: {R/W bit, 15-bit Address}
-
+        
         spi_write(write_addr_cmd, DATA_WRITE);
+        
+        
 
-        # (CLK_PERIOD * 5); // Wait a few cycles between transactions
+        # (CLK_PERIOD * 5);
+ // Wait a few cycles between transactions
 
         // 3. Perform a READ operation from the same address
 
         spi_read(read_addr_cmd, read_data);
+        
 
         # (CLK_PERIOD * 2);
+       
 
         // 4. Verification
         $display("--------------------------------------------------");

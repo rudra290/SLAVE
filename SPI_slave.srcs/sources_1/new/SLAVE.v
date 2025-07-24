@@ -82,6 +82,10 @@ module SLAVE(
                 write_addr    <= Addr[14:0];
                 write_data    <= Data_in;
             end
+            else if(count > 24) begin
+                count <= 25;
+            end
+            
     end
     
     // NEW: Output driver logic (on negedge)

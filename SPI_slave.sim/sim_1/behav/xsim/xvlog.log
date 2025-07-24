@@ -1,0 +1,8 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sources_1/new/SLAVE.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SLAVE
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module SLAVE_tb
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v:66]
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v:72]
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v:99]
+WARNING: [VRFC 10-8374] loop variable declaration is not allowed in this mode of Verilog [C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v:111]

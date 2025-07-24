@@ -24,119 +24,79 @@ module SLAVE(
     input sclk,
     inout SDIO,
     input SEN
-    );
-    reg R_W,sdio_in;
-    reg [4:0]count = 0;
-    reg [15:0]Addr;
-    reg [7:0]Data;
-    always @(posedge sclk) begin
-    if(SEN) begin
-    count = 0;
-    end
-    else begin
-    case(count)
-    5'b00000: begin
-        R_W = SDIO;
-        Addr[15] = 0;
-        count = 5'b00001;
-        end
-    5'b00001: begin
-        Addr[14] = 0;
-        count = 5'b00010;
-        end
-    5'b00010: begin
-        Addr[13] = 0;
-        count = 5'b00011;
-        end
-    5'b00011: begin
-        Addr[12] = SDIO;
-        count = 5'b00100;
-        end
-    5'b00100: begin
-        Addr[11] = SDIO;
-        count = 5'b00101;
-        end
-    5'b00101: begin
-        Addr[10] = SDIO;
-        count = 5'b00110;
-        end
-    5'b00110: begin
-        Addr[9] = SDIO;
-        count = 5'b00111;
-        end
-    5'b00111: begin
-        Addr[8] = SDIO;
-        count = 5'b01000;
-        end
-    5'b01000: begin
-        Addr[7] = SDIO;
-        count = 5'b01001;
-        end
-    5'b01001: begin
-        Addr[6] = SDIO;
-        count = 5'b01010;
-        end
-    5'b01010: begin
-        Addr[5] = SDIO;
-        count = 5'b01011;
-        end
-    5'b01011: begin
-        Addr[4] = SDIO;
-        count = 5'b01100;
-        end
-    5'b01100: begin
-        Addr[3] = SDIO;
-        count = 5'b01101;
-        end
-    5'b01101: begin
-        Addr[2] = SDIO;
-        count = 5'b01110;
-        end
-    5'b01110: begin
-        Addr[1] = SDIO;
-        count = 5'b01111;
-        end
-    5'b01111: begin
-        Addr[0] = SDIO;
-        count = 5'b10000;
-        end
-    5'b10000: begin
-        Data[7] = SDIO;
-        count = 5'b10001;
-        end
-    5'b10001: begin
-        Data[6] = SDIO;
-        count = 5'b10010;
-        end
-    5'b10010: begin
-        Data[5] = SDIO;
-        count = 5'b10011;
-        end
-    5'b10011: begin
-        Data[4] = SDIO;
-        count = 5'b10100;
-        end
-    5'b10100: begin
-        Data[3] = SDIO;
-        count = 5'b10101;
-        end
-    5'b10101: begin
-        Data[2] = SDIO;
-        count = 5'b10110;
-        end
-    5'b10110: begin
-        Data[1] = SDIO;
-        count = 5'b10111;
-        end
-    5'b10111: begin
-        Data[0] = SDIO;
-        count = 5'b11000;
-        end
-    default: begin
-        count = 5'b11000;  
-        end
-    endcase
-    end
-    end
+);
+
+    // Internal registers
+    reg [4:0] count = 0;
+    reg [15:0] Addr;
+    reg [7:0] Data_in;           // Data received from master
+    reg [7:0] Data_out;          // Data to be sent to master
     
+    // NEW: Registers to hold data for a pending write operation
+    reg write_pending = 1'b0;    // Flag to indicate a write is ready
+    reg [14:0] write_addr;       // Latched address for the write
+    reg [7:0] write_data;        // Latched data for the write
+    
+    // Internal memory for the slave
+    reg [7:0] memory [0:32767];
+    
+    // This is the output driver for the SDIO pin
+    // It's active only during a read operation (Addr[15]==1) when SEN is low.
+    assign SDIO = (!SEN && Addr[15] && count >= 16) ? Data_out[7] : 1'bz;
+
+    // Main logic block
+    always @(posedge sclk) begin
+        if (SEN) begin
+            // When SEN is high, the transaction is inactive.
+            // Reset the transaction state machine.
+            count <= 0;
+            Addr  <= 0;
+            
+            // NEW: If a write was pending from the completed transaction, execute it now.
+            if (write_pending) begin
+                memory[write_addr] <= write_data;
+                write_pending <= 1'b0; // Clear the flag after the write is done
+            end
+        end 
+        else begin
+            // When SEN is low, the transaction is active.
+            count <= count + 1; // Increment count on each clock edge
+            
+            // States 0-15: Capture the 16-bit address command
+            // MSB (Addr[15]) is the R/W bit.
+            if (count <= 15) begin
+                Addr[15 - count] <= SDIO;
+            end
+
+            // States 16-23: Data phase
+            if (count >= 16 && count <= 23) begin
+                if (Addr[15] == 0) begin // It's a WRITE operation
+                    // Capture the data bits coming from the master
+                    Data_in[23 - count] <= SDIO;
+                end
+                else begin // It's a READ operation
+                    // Shift out the data from Data_out register
+                    Data_out <= {Data_out[6:0], 1'b0}; 
+                end
+            end
+         
+        end
+        
+        // NEW: At the end of the data phase of a WRITE cycle, latch the data
+        // and set the pending flag instead of writing directly to memory.
+            
+        if (count == 24 && Addr[15] == 0) begin
+                write_pending <= 1'b1;
+                write_addr    <= Addr[14:0];
+                write_data    <= Data_in;
+        end
+        
+        // After address is fully received in a READ cycle, load data for sending
+        if (count == 16 && Addr[15] == 1) begin
+                // If it's a READ, load the data from memory after address is received
+             Data_out <= memory[Addr[14:0]]; // Use only the 15-bit address part
+        end
+    end
+
 endmodule
+

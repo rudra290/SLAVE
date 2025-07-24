@@ -1,0 +1,19 @@
+Time resolution is 1 ps
+--------------------------------------------------
+INFO: Starting Testbench for SLAVE write cycle at time 0.
+INFO: Preparing SPI frame for writing...
+  -> Address = 0xf0a
+  -> Data    = 0x5c
+  -> Full Frame = 0x0f0a5c
+--------------------------------------------------
+INFO: SEN asserted low at time 20000. Starting transaction.
+INFO: SEN de-asserted high at time 260000. Transaction ended.
+--------------------------------------------------
+VERIFICATION:
+  [SUCCESS] Test Passed! Slave received the correct data.
+      -> R/W: 0
+      -> Addr: 0xf0a
+      -> Data: 0x5c
+--------------------------------------------------
+INFO: Simulation finished at time 320000.
+$finish called at time : 320 ns : File "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v" Line 113

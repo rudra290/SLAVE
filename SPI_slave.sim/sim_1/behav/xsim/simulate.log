@@ -1,17 +1,17 @@
 Time resolution is 1 ps
 --- Starting SPI WRITE Transaction ---
 Time: 20000 ns
-Writing Data 0xab to Address 0x1239
+Writing Data 0xcc to Address 0x1233
 --- SPI WRITE Transaction Complete ---
 --- Starting SPI READ Transaction ---
 Time: 310000 ns
-Reading from Address 0x1239
-Read Data: 0xX5
+Reading from Address 0x1233
+Read Data: 0xcc
 --- SPI READ Transaction Complete ---
 --------------------------------------------------
 FINAL VERIFICATION:
-  [FAILURE] Test Failed! Data mismatch.
-  Expected to read 0xab, but got 0xX5.
+  [SUCCESS] Test Passed!
+  Data written (0xcc) matches data read (0xcc).
 --------------------------------------------------
 INFO: Simulation finished at time 620000 ns.
 $finish called at time : 620 ns : File "C:/Users/rudra/Verilog_Projects/SPI_slave/SPI_slave.srcs/sim_1/new/SLAVE_tb.v" Line 162

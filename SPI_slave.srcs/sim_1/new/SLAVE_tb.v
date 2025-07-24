@@ -24,8 +24,8 @@ module SLAVE_tb();
 
     // Test Parameters
     parameter CLK_PERIOD  = 10;      // 10ns clock period -> 100MHz
-    parameter ADDR_TEST   = 15'h1239;  // Example 15-bit Address
-    parameter DATA_WRITE  = 8'hAB;     // Example 8-bit Data to write
+    parameter ADDR_TEST   = 15'h1233;  // Example 15-bit Address
+    parameter DATA_WRITE  = 8'hCC;     // Example 8-bit Data to write
 
     // Testbench Signals
     reg  sclk;

@@ -105,7 +105,7 @@ module SLAVE_tb();
             // FIX: Wait for one full clock cycle to prevent a race condition.
             // This ensures the master holds the last address bit on the bus
             // long enough for the slave to sample it before the master releases the bus.
-            # (CLK_PERIOD );
+            #6;
 
             // 2. Switch to read mode and capture 8 bits of data
             is_master_writing = 1'b0; // Master now safely releases the bus for the slave to drive

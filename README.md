@@ -1,86 +1,63 @@
-# 🧪 SPI Protocol Explorer – ADC3664 Emulator
+# Verilog SPI Slave & Interactive Protocol Explorer
 
-A fully interactive web-based visualization tool to explore the **SPI protocol** used by the **TI ADC3664 ADC**. This emulator demonstrates how to build and understand 24-bit SPI transactions used in real-world embedded systems.
+This project provides a complete solution for understanding and implementing the **SPI configuration protocol** for the **Texas Instruments ADC3664**. It consists of two main components:
 
-> 🔧 Built for hardware engineers, students, and hobbyists working with SPI-based communication and register-level interactions.
-
----
-
-## 🔗 Live Demo
-
-👉 [View Online Demo](#) *(insert your deployment link here, e.g., GitHub Pages, Netlify)*
+- ✅ **Verilog SPI Slave Module**  
+- 🌐 **Interactive SPI Protocol Explorer (Web Tool)**
 
 ---
 
-## 🧰 Features
+## 🚀 Interactive Protocol Explorer
 
-- 🎛️ **Interactive SPI Frame Generator**  
-  Build custom SPI transactions by selecting **Read/Write**, entering a **15-bit address**, and **8-bit data** (for write). Instantly visualize the frame bit-by-bit.
+The best way to understand the protocol is to **see it in action**.
 
-- 🎨 **Real-Time Visualization**  
-  View SPI frame as a series of color-coded bits driven by **master** or **slave**. Blue = master, Green = slave.
+> **▶️ [Launch the Interactive Explorer](https://your-github-username.github.io/your-repo-name/)**  
+> *(Note: You must enable GitHub Pages from the repository settings for this to work.)*
 
-- 💾 **ADC3664 Protocol Accurate**  
-  3-wire SPI compliant: `sclk`, `SEN`, `SDIO`, mimicking the **TI ADC3664** configuration protocol.
-
-- 🧠 **32KB Internal Memory Map Emulation**  
-  Simulates `32767 x 8-bit` memory block used for register reads/writes.
-
-- ⌛ **Pending Write System**  
-  Emulates real device behavior by applying writes only after `SEN` goes high.
-
-- 📋 **Verilog Code Copy Tool**  
-  Includes instantiation code block with one-click copy button for fast use in RTL designs.
+### Features:
+- Switch between **Read** and **Write** operations.
+- Enter **custom addresses** and **data values**.
+- Instantly visualize the **24-bit SPI communication frame**.
+- See clearly which bits are driven by the **Master** vs **Slave**.
 
 ---
 
-## ⚙️ SPI Frame Format
+## 🛠️ Verilog SPI Slave Module
 
+The core of this project is the `SLAVE.v` module.
 
-- **Write**: Master sends all 24 bits  
-- **Read**: Master sends first 16 bits, slave responds with 8-bit data
+It emulates the SPI-based register access protocol of the **ADC3664** and is ideal for **FPGA integration** or **simulation** environments.
 
-| Signal | Role |
-|--------|------|
-| `sclk` | Clock input |
-| `SEN`  | Slave Enable (active low) |
-| `SDIO` | Bidirectional data line |
+### 📦 Features:
 
----
+- ✅ **ADC3664 Protocol Compliant**  
+  Implements 3-wire SPI: `sclk`, `SEN` (active-low), `SDIO` (bidirectional).
+  
+- 💾 **32KB Internal Memory**  
+  Contains a `32767 x 8-bit` memory block for read/write operations.
 
-## 📷 Screenshot
+- 🔒 **Safe Write Mechanism**  
+  Uses a pending-write system that latches data and commits only after `SEN` goes high.
 
-> *A dynamic SPI frame generator with bit visualization*
-
-![screenshot](assets/screenshot.png) <!-- Add a screenshot in your repo or remove this line -->
-
----
-
-## 🖥️ Usage
-
-1. Open the web app.
-2. Select **Read** or **Write**.
-3. Enter:
-   - A **15-bit hexadecimal address** (e.g. `1A3F`)
-   - (For Write) an **8-bit data value** (e.g. `D5`)
-4. Click **"Generate Frame"** to see the full bit stream.
-
-Color Legend:
-- 🟦 **Master-driven bits**
-- 🟩 **Slave-driven bits**
+- 🔄 **Standard Clocking Scheme**  
+  - **Samples data** on **rising edge** of `sclk`  
+  - **Drives data** on **falling edge** of `sclk`  
 
 ---
 
-## 🔩 Example Verilog Instantiation
+## 🔧 How to Use
+
+### 1. Add `SLAVE.v` to Your Project
+
+Include it in your FPGA or simulation environment.
+
+### 2. Instantiate the SPI Slave
 
 ```verilog
-// Example instantiation in a top-level module
-
 module your_project_top (
-    // Your other ports...
-    input  wire sclk,  // SPI Clock
-    inout  wire SDIO,  // Bidirectional SPI Data
-    input  wire SEN    // Slave Enable (Active Low)
+    input  wire sclk,   // SPI Clock
+    inout  wire SDIO,   // Bidirectional SPI Data
+    input  wire SEN     // Slave Enable (Active Low)
 );
 
     // Instantiate the SPI Slave module
@@ -91,9 +68,3 @@ module your_project_top (
     );
 
 endmodule
-```
-🧑‍💻 Author
-
-Made with ❤️ by rudra290
-
-Based on the SLAVE.v implementation for ADC register emulation.
